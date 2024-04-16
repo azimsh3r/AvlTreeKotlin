@@ -2,7 +2,7 @@ package org.jub.kotlin.hometask3
 
 import kotlin.math.max
 
-open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : BalancedSearchTree<K, V> {
+open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : BalancedSearchTree<K, V> {
     override var height: Int = 1
     var root: Node<K, V>? = null
 
@@ -14,7 +14,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
 
     override fun maximumKey(): K {
         var cursor = root
-        while (cursor?.rightChild != null ) {
+        while (cursor?.rightChild != null) {
             cursor = cursor.rightChild
         }
 
@@ -26,7 +26,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
 
     override fun minimumKey(): K {
         var cursor = root
-        while (cursor?.leftChild != null ) {
+        while (cursor?.leftChild != null) {
             cursor = cursor.leftChild;
         }
         if (cursor != null) {
@@ -37,7 +37,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
 
     override fun maximumValue(): V {
         var cursor = root
-        while (cursor?.rightChild != null ) {
+        while (cursor?.rightChild != null) {
             cursor = cursor.rightChild
         }
         if (cursor != null) {
@@ -48,7 +48,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
 
     override fun minimumValue(): V {
         var cursor = root
-        while (cursor?.leftChild != null ) {
+        while (cursor?.leftChild != null) {
             cursor = cursor.leftChild
         }
         if (cursor != null) {
@@ -79,7 +79,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
         return balance(currentNode)
     }
 
-    private fun delete(key: K, currentNode: Node<K, V>?): Node<K,V>? {
+    private fun delete(key: K, currentNode: Node<K, V>?): Node<K, V>? {
         if (currentNode == null) {
             throw Exception("Tree is empty")
         }
@@ -117,8 +117,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
                 node.leftChild = leftRotate(node.leftChild!!)
                 rightRotate(node)
             }
-        }
-        else if (balanceFactor < -1) {
+        } else if (balanceFactor < -1) {
             return if (height(node.rightChild?.leftChild) - height(node.rightChild?.rightChild) <= 0) {
                 leftRotate(node)
             } else {
@@ -131,7 +130,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
 
     private fun leftRotate(node: Node<K, V>): Node<K, V> {
         val newRoot = node.rightChild
-        if(newRoot != null) {
+        if (newRoot != null) {
             node.rightChild = newRoot.leftChild ?: node
 
             newRoot.leftChild = node
@@ -146,7 +145,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
 
     private fun rightRotate(node: Node<K, V>): Node<K, V> {
         val newRoot = node.leftChild
-        if(newRoot != null) {
+        if (newRoot != null) {
             node.leftChild = newRoot.rightChild
             newRoot.rightChild = node
             updateHeight(node)
@@ -165,11 +164,13 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
         }
         return current
     }
-    private fun updateHeight (node: Node<K,V>) {
+
+    private fun updateHeight(node: Node<K, V>) {
         val maxHeight = max(height(node.leftChild), height(node.rightChild))
         node.height = maxHeight
     }
-    private fun height(node : Node<K,V>?) : Int {
+
+    private fun height(node: Node<K, V>?): Int {
         if (node != null) {
             return node.height
         }

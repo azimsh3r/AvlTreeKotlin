@@ -29,10 +29,10 @@ interface MutableBalancedSearchTreeMap<K : Comparable<K>, V> : MutableMap<K, V>,
      * This method has a requirement that keys of `other` should be larger than keys of `this`, otherwise an Exception
      * should be thrown.
      */
-    fun merge(other: MutableBalancedSearchTreeMap<K, V>): MutableBalancedSearchTreeMap<K, V>
+    fun merge(other: MutableBalancedSearchTreeMap<out K, out V>): MutableBalancedSearchTreeMap<K, V>
 }
 
-infix fun <K : Comparable<K>, V> MutableBalancedSearchTreeMap<K, V>.mergeWith(other: MutableBalancedSearchTreeMap<K, V>) = merge(other)
+infix fun <K : Comparable<K>, V> MutableBalancedSearchTreeMap<K, V>.mergeWith(other: MutableBalancedSearchTreeMap<out K, out V>) = merge(other)
 
 /**
  * AbstractIterator might help you implement Iterator.

@@ -1,7 +1,8 @@
 package org.jub.kotlin.hometask3
 
-class AvlTreeList<K : Comparable<K> , V : Any>(collection: Iterable<Pair<K, V>>, override var height: Int,
-                                               override val size: Int
+class AvlTreeList<K : Comparable<K>, V : Any>(
+    collection: Iterable<Pair<K, V>>, override var height: Int,
+    override val size: Int
 ) :
     BalancedSearchTreeList<K, V>, Bst<K, V>(collection) {
 
@@ -58,12 +59,14 @@ class AvlTreeList<K : Comparable<K> , V : Any>(collection: Iterable<Pair<K, V>>,
             inOrderTraversalWithIndex(node.rightChild, elements, index + elements.size + 1)
         }
     }
+
     override fun isEmpty(): Boolean = root == null
 
     override fun iterator(): Iterator<V> = listIterator()
 
 
-    override fun lastIndexOf(element: V): Int = this.reversed().indexOf(element).let { if (it != -1) size - it - 1 else it }
+    override fun lastIndexOf(element: V): Int =
+        this.reversed().indexOf(element).let { if (it != -1) size - it - 1 else it }
 
     override fun listIterator(): ListIterator<V> {
         val elements = mutableListOf<V>()
