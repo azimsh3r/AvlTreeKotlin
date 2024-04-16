@@ -4,7 +4,6 @@ import kotlin.math.max
 
 open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : BalancedSearchTree<K, V> {
     override var height: Int = 1
-
     var root: Node<K, V>? = null
 
     init {
@@ -22,7 +21,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
         if (cursor != null) {
             return cursor.key
         }
-        throw Exception("Tree is empty")
+        throw Exception("THe Tree is empty")
     }
 
     override fun minimumKey(): K {
@@ -33,7 +32,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
         if (cursor != null) {
             return cursor.key
         }
-        throw Exception("Tree is empty")
+        throw Exception("The Tree is empty")
     }
 
     override fun maximumValue(): V {
@@ -44,7 +43,7 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
         if (cursor != null) {
             return cursor.value
         }
-        throw Exception("Tree is empty")
+        throw Exception("The Tree is empty")
     }
 
     override fun minimumValue(): V {
@@ -167,12 +166,8 @@ open class Bst <K: Comparable<K>, V> (collection: Iterable<Pair<K, V>>) : Balanc
         return current
     }
     private fun updateHeight (node: Node<K,V>) {
-        val maxHeight = max(
-            height(node.leftChild),
-            height(node.rightChild)
-        )
+        val maxHeight = max(height(node.leftChild), height(node.rightChild))
         node.height = maxHeight
-        this.height = max(height, maxHeight)
     }
     private fun height(node : Node<K,V>?) : Int {
         if (node != null) {
