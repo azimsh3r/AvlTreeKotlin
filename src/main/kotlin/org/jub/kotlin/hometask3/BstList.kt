@@ -1,6 +1,6 @@
 package org.jub.kotlin.hometask3
 
-class AvlTreeList<K : Comparable<K>, V : Any>(
+class BstList<K : Comparable<K>, V : Any>(
     collection: Iterable<Pair<K, V>>,
     override var height: Int,
     override val size: Int

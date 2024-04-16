@@ -1,6 +1,6 @@
 package org.jub.kotlin.hometask3
 
-class AvlMutableMap<K : Comparable<K>, V>(
+class MutableBstMap<K : Comparable<K>, V>(
     collection: Iterable<Pair<K, V>>,
     override var size: Int = 0,
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>> = mutableSetOf(),
