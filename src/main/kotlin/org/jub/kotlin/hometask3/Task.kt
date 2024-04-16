@@ -1,5 +1,7 @@
 package org.jub.kotlin.hometask3
 
+data class Node <K: Comparable<K>, V> (var key: K, var value: V, var leftChild: Node<K, V>? = null, var rightChild: Node<K, V>? = null, var height: Int = 1)
+
 interface BalancedSearchTree<K : Comparable<K>, V> {
     /* abstract */ val height: Int
 
