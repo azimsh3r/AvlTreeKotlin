@@ -1,5 +1,9 @@
 package org.jub.kotlin.hometask3
 
+import org.jub.kotlin.hometask3.AddBstFun.balance
+import org.jub.kotlin.hometask3.AddBstFun.findMax
+import org.jub.kotlin.hometask3.AddBstFun.findMin
+import org.jub.kotlin.hometask3.AddBstFun.updateHeight
 import kotlin.math.max
 
 open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : BalancedSearchTree<K, V> {
@@ -12,152 +16,124 @@ open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : Balance
         }
     }
 
-    override fun maximumKey(): K {
-        var cursor = root
-        while (cursor?.rightChild != null) {
-            cursor = cursor.rightChild
-        }
+    override fun maximumKey(): K =
+        root?.let { AddBstFun.findMax<K, V>(it).key } ?: throw NoSuchElementException("The Tree is empty")
 
-        if (cursor != null) {
-            return cursor.key
-        }
-        throw Exception("THe Tree is empty")
+    override fun minimumKey(): K =
+        root?.let { AddBstFun.findMin<K, V>(it).key } ?: throw NoSuchElementException("The Tree is empty")
+
+    override fun maximumValue(): V =
+        root?.let { findMax(it).value } ?: throw NoSuchElementException("The Tree is empty")
+
+    override fun minimumValue(): V =
+        root?.let { findMin(it).value } ?: throw NoSuchElementException("The Tree is empty")
+
+    fun add(pair: Pair<K, V>) {
+        root = insert(pair, root)
     }
 
-    override fun minimumKey(): K {
-        var cursor = root
-        while (cursor?.leftChild != null) {
-            cursor = cursor.leftChild;
-        }
-        if (cursor != null) {
-            return cursor.key
-        }
-        throw Exception("The Tree is empty")
-    }
-
-    override fun maximumValue(): V {
-        var cursor = root
-        while (cursor?.rightChild != null) {
-            cursor = cursor.rightChild
-        }
-        if (cursor != null) {
-            return cursor.value
-        }
-        throw Exception("The Tree is empty")
-    }
-
-    override fun minimumValue(): V {
-        var cursor = root
-        while (cursor?.leftChild != null) {
-            cursor = cursor.leftChild
-        }
-        if (cursor != null) {
-            return cursor.value
-        }
-        throw Exception("Tree is empty")
-    }
-
-    fun add(pair: Pair<K, V>) = insert(pair, root)
     fun removeNode(key: K, node: Node<K, V>? = root) = delete(key, node)
 
-    /** Additional necessary functions **/
     private fun insert(pair: Pair<K, V>, currentNode: Node<K, V>?): Node<K, V>? {
-        val node = Node(pair.first, pair.second, null, null, 1)
+        currentNode?.let {
+            val node = Node(pair.first, pair.second, null, null, 1)
 
-        if (currentNode == null) {
-            return node
+            if (pair.first < it.key) {
+                it.leftChild = insert(pair, it.leftChild)
+            } else if (pair.first > it.key) {
+                it.rightChild = insert(pair, it.rightChild)
+            }
+
+            AddBstFun.updateHeight<K, V>(it)
+
+            return AddBstFun.balance<K, V>(it)
         }
 
-        if (pair.first < currentNode.key) {
-            currentNode.leftChild = insert(pair, currentNode.leftChild)
-        } else if (pair.first > currentNode.key) {
-            currentNode.rightChild = insert(pair, currentNode.rightChild)
-        }
-
-        updateHeight(currentNode)
-
-        return balance(currentNode)
+        // If currentNode is null, return a new node
+        return Node(pair.first, pair.second, null, null, 1)
     }
 
     private fun delete(key: K, currentNode: Node<K, V>?): Node<K, V>? {
-        if (currentNode == null) {
-            throw Exception("Tree is empty")
-        }
+        val node = currentNode ?: return null
 
-        when {
-            key < currentNode.key -> currentNode.leftChild = delete(key, currentNode.leftChild)
-            key > currentNode.key -> currentNode.rightChild = delete(key, currentNode.rightChild)
+        return when {
+            key < node.key -> {
+                node.leftChild = delete(key, node.leftChild)
+                updateHeight(node)
+                balance(node)
+            }
+
+            key > node.key -> {
+                node.rightChild = delete(key, node.rightChild)
+                updateHeight(node)
+                balance(node)
+            }
+
             else -> {
-                if (currentNode.leftChild == null) return currentNode.rightChild
-                if (currentNode.rightChild == null) return currentNode.leftChild
-                val successor = findSuccessor(currentNode.rightChild!!)
-
-                currentNode.key = successor.key
-                currentNode.value = successor.value
-
-                currentNode.rightChild = delete(successor.key, currentNode.rightChild)
+                val updatedNode = node.leftChild ?: node.rightChild ?: return null
+                val successor = AddBstFun.findSuccessor<K, V>(node.rightChild!!)
+                node.key = successor.key
+                node.value = successor.value
+                node.rightChild = delete(successor.key, node.rightChild)
+                updateHeight(node)
+                balance(node)
+                updatedNode
             }
         }
-
-        updateHeight(currentNode)
-        return balance(currentNode)
     }
+}
 
-    private fun balance(node: Node<K, V>?): Node<K, V>? {
-        if (node == null) {
-            return null
-        }
+object AddBstFun {
+    fun <K : Comparable<K>, V> balance(node: Node<K, V>?): Node<K, V>? {
+        node ?: return null
 
         val balanceFactor = height(node.leftChild) - height(node.rightChild)
 
-        if (balanceFactor > 1) {
-            return if (height(node.leftChild?.leftChild) - height(node.leftChild?.rightChild) >= 0) {
-                rightRotate(node)
-            } else {
-                node.leftChild = leftRotate(node.leftChild!!)
-                rightRotate(node)
+        return when {
+            balanceFactor > 1 -> {
+                if (height(node.leftChild?.leftChild) - height(node.leftChild?.rightChild) >= 0) {
+                    rightRotate(node)
+                } else {
+                    node.leftChild = leftRotate(node.leftChild!!)
+                    rightRotate(node)
+                }
             }
-        } else if (balanceFactor < -1) {
-            return if (height(node.rightChild?.leftChild) - height(node.rightChild?.rightChild) <= 0) {
-                leftRotate(node)
-            } else {
-                node.rightChild = rightRotate(node.rightChild!!)
-                leftRotate(node)
+
+            balanceFactor < -1 -> {
+                if (height(node.rightChild?.leftChild) - height(node.rightChild?.rightChild) <= 0) {
+                    leftRotate(node)
+                } else {
+                    node.rightChild = rightRotate(node.rightChild!!)
+                    leftRotate(node)
+                }
             }
+
+            else -> node
         }
-        return node
     }
 
-    private fun leftRotate(node: Node<K, V>): Node<K, V> {
+    private fun <K : Comparable<K>, V> leftRotate(node: Node<K, V>): Node<K, V> {
         val newRoot = node.rightChild
-        if (newRoot != null) {
-            node.rightChild = newRoot.leftChild ?: node
-
-            newRoot.leftChild = node
-
+        return newRoot?.let {
+            node.rightChild = it.leftChild ?: node
+            it.leftChild = node
             updateHeight(node)
-
-            return newRoot
-        }
-
-        throw Exception("Nothing to rotate")
+            it
+        } ?: throw NoSuchElementException("Nothing to rotate")
     }
 
-    private fun rightRotate(node: Node<K, V>): Node<K, V> {
+    private fun <K : Comparable<K>, V> rightRotate(node: Node<K, V>): Node<K, V> {
         val newRoot = node.leftChild
-        if (newRoot != null) {
-            node.leftChild = newRoot.rightChild
-            newRoot.rightChild = node
+        return newRoot?.let {
+            node.leftChild = it.rightChild
+            it.rightChild = node
             updateHeight(node)
-            updateHeight(newRoot)
-
-            return newRoot
-        }
-
-        throw Exception("Nothing to rotate")
+            updateHeight(it)
+            it
+        } ?: throw NoSuchElementException("Nothing to rotate")
     }
 
-    private fun findSuccessor(node: Node<K, V>): Node<K, V> {
+    fun <K : Comparable<K>, V> findSuccessor(node: Node<K, V>): Node<K, V> {
         var current = node
         while (current.leftChild != null) {
             current = current.leftChild!!
@@ -165,16 +141,26 @@ open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : Balance
         return current
     }
 
-    private fun updateHeight(node: Node<K, V>) {
+    fun <K : Comparable<K>, V> updateHeight(node: Node<K, V>) {
         val maxHeight = max(height(node.leftChild), height(node.rightChild))
         node.height = maxHeight
     }
 
-    private fun height(node: Node<K, V>?): Int {
-        if (node != null) {
-            return node.height
+    private fun <K : Comparable<K>, V> height(node: Node<K, V>?): Int = node?.height ?: 0
+
+    fun <K : Comparable<K>, V> findMax(node: Node<K, V>): Node<K, V> {
+        var cursor = node
+        while (cursor.rightChild != null) {
+            cursor = cursor.rightChild!!
         }
-        return 0
+        return cursor
     }
 
+    fun <K : Comparable<K>, V> findMin(node: Node<K, V>): Node<K, V> {
+        var cursor = node
+        while (cursor.leftChild != null) {
+            cursor = cursor.leftChild!!
+        }
+        return cursor
+    }
 }

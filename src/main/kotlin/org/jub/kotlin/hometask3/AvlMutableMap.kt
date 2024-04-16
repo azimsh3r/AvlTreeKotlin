@@ -1,7 +1,5 @@
 package org.jub.kotlin.hometask3
 
-import java.lang.IllegalStateException
-
 class AvlMutableMap<K : Comparable<K>, V>(
     collection: Iterable<Pair<K, V>>,
     override var size: Int = 0,
@@ -9,11 +7,8 @@ class AvlMutableMap<K : Comparable<K>, V>(
     override val keys: MutableSet<K> = mutableSetOf(),
     override val values: MutableCollection<V> = mutableListOf(),
 ) : MutableBalancedSearchTreeMap<K, V>, Bst<K, V>(collection) {
-
     init {
-        for (c in collection) {
-            size++
-        }
+        collection.forEach { _ -> size++ }
     }
 
     override fun containsKey(key: K): Boolean {
@@ -30,22 +25,7 @@ class AvlMutableMap<K : Comparable<K>, V>(
         return false
     }
 
-    override fun containsValue(value: V): Boolean = searchRecursively(value, root)
-
-    private fun searchRecursively(value: V, root: Node<K, V>?): Boolean {
-        if (root != null) {
-            if (root.value == value) {
-                return true
-            }
-            if (searchRecursively(value, root.leftChild)) {
-                return true
-            }
-            if (searchRecursively(value, root.rightChild)) {
-                return true
-            }
-        }
-        return false
-    }
+    override fun containsValue(value: V): Boolean = AddMapFun.searchRecursively<K, V>(value, root)
 
     override fun get(key: K): V? {
         var currentNode = root
@@ -62,12 +42,12 @@ class AvlMutableMap<K : Comparable<K>, V>(
     }
 
     override fun isEmpty(): Boolean {
-        size = 0;
+        size = 0
         return root == null
     }
 
     override fun remove(key: K): V? {
-        this.size--
+        size--
         keys.remove(key)
         println(get(key))
         return removeNode(key)?.value
@@ -75,11 +55,9 @@ class AvlMutableMap<K : Comparable<K>, V>(
 
     override fun merge(other: MutableBalancedSearchTreeMap<out K, out V>): MutableBalancedSearchTreeMap<K, V> {
         other.entries.forEach { (key, value) ->
-                if (!containsKey(key)) {
-                    put(key, value)
-                } else {
-                    throw Exception("It exists")
-                }
+            if (!containsKey(key)) {
+                put(key, value)
+            }
         }
         return this
     }
@@ -88,11 +66,10 @@ class AvlMutableMap<K : Comparable<K>, V>(
         root = clearRecursive(root)
     }
 
-    private fun clearRecursive(node: Node<K, V>?): Node<K, V>? {
-        if (node == null) return null
-        node.leftChild = clearRecursive(node.leftChild)
-        node.rightChild = clearRecursive(node.rightChild)
-        return removeNode(node.key, node)
+    private fun clearRecursive(node: Node<K, V>?): Node<K, V>? = node?.let {
+        it.leftChild = clearRecursive(it.leftChild)
+        it.rightChild = clearRecursive(it.rightChild)
+        removeNode(it.key, it)
     }
 
     override fun putAll(from: Map<out K, V>) = from.forEach { add(Pair(it.key, it.value)) }
@@ -108,3 +85,19 @@ class AvlMutableMap<K : Comparable<K>, V>(
         return get(key)
     }
 }
+
+object AddMapFun {
+    fun <K : Comparable<K>, V> searchRecursively(value: V, root: Node<K, V>?): Boolean {
+        root?.let {
+            if (it.value == value || searchRecursively(value, it.leftChild) || searchRecursively(
+                    value,
+                    it.rightChild
+                )
+            ) {
+                return true
+            }
+        }
+        return false
+    }
+}
+
