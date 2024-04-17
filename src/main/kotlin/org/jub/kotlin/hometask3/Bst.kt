@@ -7,7 +7,7 @@ import org.jub.kotlin.hometask3.AddBstFun.updateHeight
 import kotlin.math.max
 
 open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : BalancedSearchTree<K, V> {
-    override var height: Int = 1
+    override var height: Int = 0
     var root: Node<K, V>? = null
 
     init {
@@ -44,9 +44,9 @@ open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : Balance
                 it.rightChild = insert(pair, it.rightChild)
             }
 
-            AddBstFun.updateHeight<K, V>(it)
+            updateHeight(it)
 
-            return AddBstFun.balance<K, V>(it)
+            return balance(it)
         }
 
         // If currentNode is null, return a new node
@@ -71,7 +71,7 @@ open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : Balance
 
             else -> {
                 val updatedNode = node.leftChild ?: node.rightChild ?: return null
-                val successor = AddBstFun.findSuccessor<K, V>(node.rightChild!!)
+                val successor = AddBstFun.findSuccessor(node.rightChild!!)
                 node.key = successor.key
                 node.value = successor.value
                 node.rightChild = delete(successor.key, node.rightChild)

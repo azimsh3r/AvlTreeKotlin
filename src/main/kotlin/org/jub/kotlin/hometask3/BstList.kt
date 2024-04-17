@@ -3,9 +3,13 @@ package org.jub.kotlin.hometask3
 class BstList<K : Comparable<K>, V : Any>(
     collection: Iterable<Pair<K, V>>,
     override var height: Int,
-    override val size: Int
+    override var size: Int = 0
 ) :
     BalancedSearchTreeList<K, V>, Bst<K, V>(collection) {
+        init {
+            collection.map { size++ }
+        }
+
     override fun contains(element: V): Boolean = AddListFun.searchRecursively(element, root)
 
     override fun containsAll(elements: Collection<V>): Boolean {
@@ -16,7 +20,7 @@ class BstList<K : Comparable<K>, V : Any>(
         return true
     }
 
-    override fun get(index: Int): V = AddListFun.getByIndex(index, root)
+    override fun get(index: Int): V = AddListFun.getByIndex(index, root, size)
 
     override fun indexOf(element: V): Int {
         this.forEachIndexed { id, el -> if (el == element) return id }
@@ -28,11 +32,11 @@ class BstList<K : Comparable<K>, V : Any>(
     override fun iterator(): Iterator<V> = listIterator()
 
     override fun lastIndexOf(element: V): Int =
-        this.reversed().indexOf(element).let { if (it != -1) size - it - 1 else it }
+        this.reversed().indexOf(element).let { if (it != -1) size - it - 2 else it }
 
     override fun listIterator(): ListIterator<V> {
         val elements = mutableListOf<V>()
-        AddListFun.inOrderTraversal<K, V>(root, elements)
+        AddListFun.inOrderTraversal(root, elements)
         return elements.listIterator()
     }
 
@@ -75,16 +79,15 @@ object AddListFun {
         return false
     }
 
-    public fun <K : Comparable<K>, V> getByIndex(index: Int, root: Node<K, V>?): V {
+    public fun <K : Comparable<K>, V> getByIndex(index: Int, root: Node<K, V>?, size: Int): V {
         val elements = mutableListOf<Pair<Int, V>>()
 
-        if (index <= 0 || index >= elements.size) {
+        if (index < 0 || index >= size) {
             throw IndexOutOfBoundsException("Index $index is out of bounds.")
         }
 
         inOrderTraversalWithIndex<K, V>(root, elements)
 
-        // Return the value at the specified index
         return elements[index].second
     }
 }
