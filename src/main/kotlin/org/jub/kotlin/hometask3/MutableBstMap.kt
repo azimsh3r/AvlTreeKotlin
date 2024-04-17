@@ -9,7 +9,7 @@ class MutableBstMap<K : Comparable<K>, V>(
 ) : MutableBalancedSearchTreeMap<K, V>, Bst<K, V>(collection) {
     init {
         collection.forEach { _ -> size++ }
-        collection.forEach { addEntry(it.first, it.second) }
+        collection.forEach { AddMapFun.addEntry(it.first, it.second, entries) }
     }
 
     override fun containsKey(key: K): Boolean {
@@ -81,7 +81,6 @@ class MutableBstMap<K : Comparable<K>, V>(
     override fun put(key: K, value: V): V? {
         if (!containsKey(key)) {
             size++
-
             keys.add(key)
             values.add(value)
             this.add(Pair(key, value))
@@ -89,20 +88,12 @@ class MutableBstMap<K : Comparable<K>, V>(
         }
         return get(key)
     }
-
-    private fun addEntry(key: K, value: V) {
-        val entry = MapEntry(key, value)
-        entries.add(entry)
-        keys.add(key)
-        values.add(value)
-    }
-
-    private inner class MapEntry(override val key: K, override var value: V) : MutableMap.MutableEntry<K, V> {
-        override fun setValue(newValue: V): V {
-            val oldValue = value
-            value = newValue
-            return oldValue
-        }
+}
+class MapEntry<K : Comparable<K>, V>(override val key: K, override var value: V) : MutableMap.MutableEntry<K, V> {
+    override fun setValue(newValue: V): V {
+        val oldValue = value
+        value = newValue
+        return oldValue
     }
 }
 
@@ -118,5 +109,10 @@ object AddMapFun {
             }
         }
         return false
+    }
+
+    fun <K : Comparable<K>, V> addEntry(key: K, value: V, entries: MutableSet<MutableMap.MutableEntry<K, V>>) {
+        val entry = MapEntry(key, value)
+        entries.add(entry)
     }
 }

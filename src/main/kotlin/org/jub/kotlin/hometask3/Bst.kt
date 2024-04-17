@@ -36,7 +36,6 @@ open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : Balance
 
     private fun insert(pair: Pair<K, V>, currentNode: Node<K, V>?): Node<K, V>? {
         currentNode?.let {
-            val node = Node(pair.first, pair.second, null, null, 1)
 
             if (pair.first < it.key) {
                 it.leftChild = insert(pair, it.leftChild)
@@ -54,7 +53,7 @@ open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : Balance
     }
 
     private fun delete(key: K, currentNode: Node<K, V>?): Node<K, V>? {
-        val node = currentNode ?: return null
+        val node = currentNode!!
 
         return when {
             key < node.key -> {
