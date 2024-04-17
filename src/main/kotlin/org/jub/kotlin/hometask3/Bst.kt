@@ -36,7 +36,6 @@ open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : Balance
 
     private fun insert(pair: Pair<K, V>, currentNode: Node<K, V>?): Node<K, V>? {
         currentNode?.let {
-
             if (pair.first < it.key) {
                 it.leftChild = insert(pair, it.leftChild)
             } else if (pair.first > it.key) {

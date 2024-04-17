@@ -2,7 +2,6 @@ package org.jub.kotlin.hometask3
 
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.assertThrows
-import kotlin.math.log
 import kotlin.test.assertEquals
 
 class BstTest {
