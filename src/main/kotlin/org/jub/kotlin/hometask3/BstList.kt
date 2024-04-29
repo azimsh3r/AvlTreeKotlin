@@ -6,9 +6,9 @@ class BstList<K : Comparable<K>, V : Any>(
     override var size: Int = 0
 ) :
     BalancedSearchTreeList<K, V>, Bst<K, V>(collection) {
-        init {
-            collection.map { size++ }
-        }
+    init {
+        collection.map { size++ }
+    }
 
     override fun contains(element: V): Boolean = AddListFun.searchRecursively(element, root)
 
@@ -46,7 +46,7 @@ class BstList<K : Comparable<K>, V : Any>(
 }
 
 object AddListFun {
-    public fun <K : Comparable<K>, V> inOrderTraversal(node: Node<K, V>?, elements: MutableList<V>) {
+    fun <K : Comparable<K>, V> inOrderTraversal(node: Node<K, V>?, elements: MutableList<V>) {
         node?.let {
             inOrderTraversal(it.leftChild, elements)
             elements.add(it.value)
@@ -54,7 +54,7 @@ object AddListFun {
         }
     }
 
-    public fun <K : Comparable<K>, V> inOrderTraversalWithIndex(
+    fun <K : Comparable<K>, V> inOrderTraversalWithIndex(
         node: Node<K, V>?,
         elements: MutableList<Pair<Int, V>>,
         index: Int = 0
@@ -66,7 +66,7 @@ object AddListFun {
         }
     }
 
-    public fun <K : Comparable<K>, V> searchRecursively(value: V, root: Node<K, V>?): Boolean {
+    fun <K : Comparable<K>, V> searchRecursively(value: V, root: Node<K, V>?): Boolean {
         root?.let {
             if (it.value == value || searchRecursively(value, it.leftChild) || searchRecursively(
                     value,
@@ -79,7 +79,7 @@ object AddListFun {
         return false
     }
 
-    public fun <K : Comparable<K>, V> getByIndex(index: Int, root: Node<K, V>?, size: Int): V {
+    fun <K : Comparable<K>, V> getByIndex(index: Int, root: Node<K, V>?, size: Int): V {
         val elements = mutableListOf<Pair<Int, V>>()
 
         if (index < 0 || index >= size) {
@@ -87,7 +87,6 @@ object AddListFun {
         }
 
         inOrderTraversalWithIndex<K, V>(root, elements)
-
         return elements[index].second
     }
 }

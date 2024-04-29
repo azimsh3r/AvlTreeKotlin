@@ -4,8 +4,6 @@ import org.jub.kotlin.hometask3.AddBstFun.balance
 import org.jub.kotlin.hometask3.AddBstFun.findMax
 import org.jub.kotlin.hometask3.AddBstFun.findMin
 import org.jub.kotlin.hometask3.AddBstFun.updateHeight
-import kotlin.math.max
-
 open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : BalancedSearchTree<K, V> {
     override var height: Int = 0
     var root: Node<K, V>? = null
@@ -42,7 +40,7 @@ open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : Balance
                 it.rightChild = insert(pair, it.rightChild)
             }
 
-            updateHeight(it)
+//            updateHeight(it)
 
             return balance(it)
         }
@@ -84,6 +82,7 @@ open class Bst<K : Comparable<K>, V>(collection: Iterable<Pair<K, V>>) : Balance
 object AddBstFun {
     fun <K : Comparable<K>, V> balance(node: Node<K, V>?): Node<K, V>? {
         node ?: return null
+        updateHeight(node)
 
         val balanceFactor = height(node.leftChild) - height(node.rightChild)
 
@@ -140,8 +139,7 @@ object AddBstFun {
     }
 
     fun <K : Comparable<K>, V> updateHeight(node: Node<K, V>) {
-        val maxHeight = max(height(node.leftChild), height(node.rightChild))
-        node.height = maxHeight
+        node.height = maxOf(height(node.leftChild), height(node.rightChild))
     }
 
     private fun <K : Comparable<K>, V> height(node: Node<K, V>?): Int = node?.height ?: 0
