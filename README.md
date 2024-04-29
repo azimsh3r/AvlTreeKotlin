@@ -1,8 +1,8 @@
 [![Build](https://github.com/cscenter/kotlin-avl/actions/workflows/HW3.yml/badge.svg)](https://github.com/cscenter/kotlin-avl/actions/workflows/HW3.yml)
 
-# Task 2. Balanced Search Tree
+# Balanced Search Tree
 
-Implement a generic BST (i.e. AVL, Cartesian tree, Splay). Using it, implement interfaces:
+generic BST (i.e. AVL, Cartesian tree, Splay). Using it, implement interfaces:
 - [`Map`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/)
 - [`MutableMap`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/)
 - [`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list): [`subList`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/sub-list.html) can be __skipped__ or implemented via creating a separate tree, there are no tests for it
